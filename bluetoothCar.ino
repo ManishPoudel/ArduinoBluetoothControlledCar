@@ -5,17 +5,16 @@
 
       For Motor Controller (l298N):-
 
-          Arduino pin 8,9,10,11 pins to l298N Driver pins respectively.
+          Arduino pin 11,10,9,8 pins to l298N Driver pins respectively.
 
                           |
                           V
 
           ( put the l298n Driver Such that the ic behind the heat sink is visible to you
-          so the control pins of l298N is closet to you then attacht 8,9,10,11 sequentially
-          from left to right int the l298N motor driver)
+          so the control pins of l298N is closet to you then attacht 11,10,9,8 sequentially
+          from left to right in the l298N motor driver)
 
           Arduino pin 5,6    =>      To the enable A and enable B pin (corner header pins of l298n Driver)
-
 
           Bluetooth Module connections :-
 
@@ -27,9 +26,12 @@
 
 
   The Software you need to Run this program is "Arduino car" android application made by "one day of Code".
+  Also a Python script(using pySerial library) can be used.
+
+  You can tune the offset, brake force, speed etc according to your configuration and needs.
 */
 
-
+// Communication Rate (Must be same for bluetooth module).
 #define SERIAL_RATE 9600
 // Direction constants.
 #define FRONT 'F'
@@ -48,8 +50,8 @@ int m2b = 11;
 
 // Initial speed of Motors.
 int speed = 100;
-// The force at with brake is applied.
-int brakeForce = 4000;
+// The force at with brake is applied.(time)
+int brakeForce = 100;
 
 /*
   If one motor runs slower OR the car is tilting in
@@ -184,9 +186,8 @@ void moveMotor(char dir){
 void brakeMotor(){
   // Electronic Braking System implemented.
   // Each time, in the Arduino car app the button is released after pressing 'S' is sent and break is applied.
-  for(int i = 0; i < brakeForce; i++){
-    moveMotor(BACK);
-  }
+  moveMotor(BACK);
+  delay(brakeForce);
   //Stop Motors.
   digitalWrite(m1a, LOW);
   digitalWrite(m1b, LOW);
